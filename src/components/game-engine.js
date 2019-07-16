@@ -9,7 +9,26 @@ export default () => {
     const [blocks, setBlocks] = React.useState(Block.createBlocks());
     const [position, setPosition] = React.useState(ImmutablePosition({ x: 50, y: 70 }));
     const [velocity, setVelocity] = React.useState(Ball.createVelocity(Ball.createStartingAngle()));
+    const handleClick = React.useCallback(
+        () => {
+            setVelocity(
+                velocity.magnitude === 0
+                    ? Ball.createVelocity(velocity.angle)
+                    : velocity.set("magnitude", 0)
+            );
+        },
+        [velocity]
+    );
+    React.useEffect(
+        () => {
+            window.addEventListener("click", handleClick);
 
+            return () => {
+                window.removeEventListener("click", handleClick);
+            };
+        },
+        [handleClick]
+    );
     React.useEffect(
         () => {
             const frameRate = 60;
