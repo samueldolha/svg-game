@@ -4,17 +4,11 @@ import * as Angle from "../utility/angle";
 import * as Ball from "../utility/ball";
 import * as Block from "../utility/block";
 import ImmutablePosition from "../utility/immutable-position";
-import ImmutableVelocity from "../utility/immutable-velocity";
 
 export default () => {
     const [blocks, setBlocks] = React.useState(Block.initializeBlocks());
     const [position, setPosition] = React.useState(ImmutablePosition({ x: 50, y: 70 }));
-    const [velocity, setVelocity] = React.useState(
-        ImmutableVelocity({
-            angle: ((2 / 3) * Math.PI * Math.random()) + ((1 / 12) * Math.PI),
-            magnitude: 30
-        })
-    );
+    const [velocity, setVelocity] = React.useState(Ball.createVelocity(Ball.createAngle()));
 
     React.useEffect(
         () => {
@@ -90,7 +84,7 @@ export default () => {
                                 }
 
                                 if (angle !== velocity.angle) {
-                                    setVelocity(velocity.set("angle", angle));
+                                    setVelocity(Ball.createVelocity(angle));
                                 }
 
                                 return oldPosition.withMutations(
