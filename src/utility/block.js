@@ -3,6 +3,7 @@ import ImmutablePosition from "./immutable-position";
 
 const blockWidth = 4;
 const blockHeight = 2;
+const blockColours = ['#E70000', '#FF8C00', '#FFEF00', '#00811F', '#0044FF', '#760089'];
 
 const ImmutableBlock = ImmutableRecord({
     id: -1,
@@ -30,7 +31,7 @@ export const createBlocks = () => {
                     x: topLeft.x + blockWidth,
                     y: topLeft.y + blockHeight
                 }),
-                colour: ['#E70000', '#FF8C00', '#FFEF00', '#00811F', '#0044FF', '#760089'][Math.round(5 * Math.random())]
+                colour: blockColours[Math.round(5 * Math.random())]
             }));
         }
     }
