@@ -1,13 +1,13 @@
 import React from "react";
 import GameEngine from "./game-engine";
 
-const getLength = () => Math.min(window.innerWidth, window.innerHeight);
-
 export default () => {
-    const [length, setLength] = React.useState(getLength());
+    const [width, setWidth] = React.useState(window.innerWidth);
+    const [height, setHeight] = React.useState(window.innerHeight);
     const handleResize = React.useCallback(
         () => {
-            setLength(getLength());
+            setWidth(window.innerWidth);
+            setHeight(window.innerHeight);
         },
         []
     );
@@ -21,13 +21,14 @@ export default () => {
         },
         [handleResize]
     );
+    const length = Math.min(width, height);
 
     return (
         <div
             style={{
                 position: "absolute",
-                left: (window.innerWidth - length) / 2,
-                top: (window.innerHeight - length) / 2 + 3,
+                left: (width - length) / 2,
+                top: (height - length) / 2 + 3,
                 width: length,
                 height: length - 6,
                 background: "Cyan",
