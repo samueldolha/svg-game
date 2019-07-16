@@ -1,4 +1,5 @@
 import React from "react";
+import GameEngine from "./game-engine";
 
 const getLength = () => Math.min(window.innerWidth, window.innerHeight);
 
@@ -20,19 +21,16 @@ export default () => {
         },
         [handleResize]
     );
-    const borderWidth = 1;
 
     return (
         <div
             style={{
                 position: "absolute",
                 left: (window.innerWidth - length) / 2,
-                top: (window.innerHeight - length) / 2,
-                width: length - (borderWidth * 2),
-                height: length - (borderWidth * 2),
-                borderWidth,
-                borderStyle: "solid",
-                borderColor: "black"
+                top: (window.innerHeight - length) / 2 + 3,
+                width: length,
+                height: length - 6,
+                background: "Cyan",
             }}
         >
             <svg
@@ -40,6 +38,7 @@ export default () => {
                 width="100%"
                 height="100%"
             >
+                <GameEngine />
             </svg>
         </div>
     )
