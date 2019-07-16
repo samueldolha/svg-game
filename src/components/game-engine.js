@@ -6,7 +6,7 @@ import * as Block from "../utility/block";
 import ImmutablePosition from "../utility/immutable-position";
 
 export default () => {
-    const [blocks, setBlocks] = React.useState(Block.initializeBlocks());
+    const [blocks, setBlocks] = React.useState(Block.createBlocks());
     const [position, setPosition] = React.useState(ImmutablePosition({ x: 50, y: 70 }));
     const [velocity, setVelocity] = React.useState(Ball.createVelocity(Ball.createAngle()));
 

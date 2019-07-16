@@ -11,7 +11,7 @@ const ImmutableBlock = ImmutableRecord({
     colour: "Black"
 });
 
-export const initializeBlocks = () => {
+export const createBlocks = () => {
     const blockArray = [];
 
     for (let rowIndex = 0; rowIndex < 10; rowIndex += 1) {
