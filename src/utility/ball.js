@@ -15,7 +15,7 @@ export const constrainCoordinate = (minimum, maximum, coordinate) => Math.max(
     Math.min(maximum - radius, coordinate)
 );
 
-export const createAngle = () => ((2 / 3) * Math.PI * Math.random()) + ((1 / 12) * Math.PI);
+export const createStartingAngle = () => ((2 / 3) * Math.PI * Math.random()) + ((1 / 12) * Math.PI);
 
 export const createVelocity = (angle) => ImmutableVelocity({
     angle,
