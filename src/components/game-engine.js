@@ -1,19 +1,22 @@
 import { List as ImmutableList } from "immutable";
 import React from "react";
-import * as Angle from "../utility/angle";
-import * as Ball from "../utility/ball";
+import * as AngleUtility from "../utility/angle";
+import * as BallUtility from "../utility/ball";
 import createBlocks from "../utility/create-blocks";
+import Ball from "./ball";
 import Block from "./block";
 
 export default () => {
     const [blocks, setBlocks] = React.useState(createBlocks());
-    const [position, setPosition] = React.useState(Ball.createStartingPosition());
-    const [velocity, setVelocity] = React.useState(Ball.createVelocity(Ball.createStartingAngle()));
+    const [position, setPosition] = React.useState(BallUtility.createStartingPosition());
+    const [velocity, setVelocity] = React.useState(
+        BallUtility.createVelocity(BallUtility.createStartingAngle())
+    );
     const handleClick = React.useCallback(
         () => {
             setVelocity(
                 velocity.magnitude === 0
-                    ? Ball.createVelocity(velocity.angle)
+                    ? BallUtility.createVelocity(velocity.angle)
                     : velocity.set("magnitude", 0)
             );
         },
@@ -44,23 +47,31 @@ export default () => {
 
                                 let angle = velocity.angle;
 
-                                if ((!Ball.rightOf(ballX, 0) && Angle.onLeftHalf(angle))
-                                    || (!Ball.leftOf(ballX, 100) && Angle.onRightHalf(angle))) {
-                                    angle = Angle.getMirrored(angle);
+                                if ((!BallUtility.rightOf(ballX, 0)
+                                    && AngleUtility.onLeftHalf(angle))
+                                    || (!BallUtility.leftOf(ballX, 100)
+                                        && AngleUtility.onRightHalf(angle))) {
+                                    angle = AngleUtility.getMirrored(angle);
                                 }
 
-                                if ((!Ball.below(ballY, 0) && Angle.onTopHalf(angle))) {
-                                    angle = Angle.getFlipped(angle);
+                                if ((!BallUtility.below(ballY, 0)
+                                    && AngleUtility.onTopHalf(angle))) {
+                                    angle = AngleUtility.getFlipped(angle);
                                 }
 
-                                if (!Ball.above(ballY, 100) && Angle.onBottomHalf(angle)) {
+                                if (!BallUtility.above(ballY, 100)
+                                    && AngleUtility.onBottomHalf(angle)) {
                                     setBlocks(createBlocks());
-                                    setPosition(Ball.createStartingPosition());
-                                    setVelocity(Ball.createVelocity(Ball.createStartingAngle()));
+                                    setPosition(BallUtility.createStartingPosition());
+                                    setVelocity(
+                                        BallUtility.createVelocity(
+                                            BallUtility.createStartingAngle()
+                                        )
+                                    );
                                 }
 
-                                ballX = Ball.constrainCoordinate(0, 100, ballX);
-                                ballY = Ball.constrainCoordinate(0, 100, ballY);
+                                ballX = BallUtility.constrainCoordinate(0, 100, ballX);
+                                ballY = BallUtility.constrainCoordinate(0, 100, ballY);
 
                                 const idsToDelete = [];
 
@@ -71,37 +82,37 @@ export default () => {
                                         const topY = block.topLeft.y;
                                         const bottomY = block.bottomRight.y;
 
-                                        const leftOverlaps = Ball.leftOf(ballX, rightX)
-                                            && !Ball.leftOf(ballX, leftX);
-                                        const leftRightOverlaps = Ball.leftOf(ballX, rightX)
-                                            && Ball.rightOf(ballX, leftX);
-                                        const rightOverlaps = !Ball.rightOf(ballX, rightX)
-                                            && Ball.rightOf(ballX, leftX);
+                                        const leftOverlaps = BallUtility.leftOf(ballX, rightX)
+                                            && !BallUtility.leftOf(ballX, leftX);
+                                        const leftRightOverlaps = BallUtility.leftOf(ballX, rightX)
+                                            && BallUtility.rightOf(ballX, leftX);
+                                        const rightOverlaps = !BallUtility.rightOf(ballX, rightX)
+                                            && BallUtility.rightOf(ballX, leftX);
                                         const overlapsX = leftOverlaps
                                             || leftRightOverlaps
                                             || rightOverlaps;
-                                        const topOverlaps = Ball.above(ballY, bottomY)
-                                            && !Ball.above(ballY, topY);
-                                        const topBottomOverlaps = Ball.above(ballY, bottomY)
-                                            && Ball.below(ballY, topY);
-                                        const bottomOverlaps = !Ball.below(ballY, bottomY)
-                                            && Ball.below(ballY, topY);
+                                        const topOverlaps = BallUtility.above(ballY, bottomY)
+                                            && !BallUtility.above(ballY, topY);
+                                        const topBottomOverlaps = BallUtility.above(ballY, bottomY)
+                                            && BallUtility.below(ballY, topY);
+                                        const bottomOverlaps = !BallUtility.below(ballY, bottomY)
+                                            && BallUtility.below(ballY, topY);
                                         const overlapsY = topOverlaps
                                             || topBottomOverlaps
                                             || bottomOverlaps;
 
                                         if (overlapsX && overlapsY) {
-                                            if ((Ball.above(ballY, bottomY)
-                                                && Angle.onBottomHalf(angle))
-                                                || (Ball.below(ballY, topY)
-                                                    && Angle.onTopHalf(angle))) {
-                                                angle = Angle.getFlipped(angle);
+                                            if ((BallUtility.above(ballY, bottomY)
+                                                && AngleUtility.onBottomHalf(angle))
+                                                || (BallUtility.below(ballY, topY)
+                                                    && AngleUtility.onTopHalf(angle))) {
+                                                angle = AngleUtility.getFlipped(angle);
                                             }
-                                            else if ((Ball.leftOf(ballX, rightX)
-                                                && Angle.onRightHalf(angle))
-                                                || (Ball.rightOf(ballX, leftX)
-                                                    && Angle.onLeftHalf(angle))) {
-                                                angle = Angle.getMirrored(angle);
+                                            else if ((BallUtility.leftOf(ballX, rightX)
+                                                && AngleUtility.onRightHalf(angle))
+                                                || (BallUtility.rightOf(ballX, leftX)
+                                                    && AngleUtility.onLeftHalf(angle))) {
+                                                angle = AngleUtility.getMirrored(angle);
                                             }
 
                                             idsToDelete.push(block.id);
@@ -128,7 +139,7 @@ export default () => {
                                 }
 
                                 if (angle !== velocity.angle) {
-                                    setVelocity(Ball.createVelocity(angle));
+                                    setVelocity(BallUtility.createVelocity(angle));
                                 }
 
                                 return oldPosition.withMutations(
@@ -155,12 +166,7 @@ export default () => {
             {blocks.map((block) => (
                 <Block key={block.toString()} block={block} />
             ))}
-            <circle
-                cx={`${position.x}%`}
-                cy={`${position.y}%`}
-                r={`${Ball.radius}%`}
-                style={{ fill: "White", stroke: "Black" }}
-            />
+            <Ball position={position} />
         </React.Fragment>
     );
 }
