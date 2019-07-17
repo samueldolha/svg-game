@@ -6,6 +6,6 @@ export const onTopHalf = (angle) => angle < Math.PI;
 
 export const onBottomHalf = (angle) => angle > Math.PI;
 
-export const getMirrored = (angle) => (angle <= Math.PI ? Math.PI : 3 * Math.PI) - angle;
+export const createMirrored = (angle) => (angle <= Math.PI ? Math.PI : 3 * Math.PI) - angle;
 
-export const getFlipped = (angle) => (2 * Math.PI) - angle;
+export const createFlipped = (angle) => (2 * Math.PI) - angle;

@@ -5,29 +5,37 @@ import {
     onRightHalf as angleOnRightHalf,
     onTopHalf as angleOnTopHalf,
     onBottomHalf as angleOnBottomHalf,
-    getMirrored as getMirroredAngle,
-    getFlipped as getFlippedAngle
+    createMirrored as createMirroredAngle,
+    createFlipped as createFlippedAngle
 } from "../utility/angle";
 import {
     leftOf as ballLeftOf,
     rightOf as ballRightOf,
     above as ballAbove,
     below as ballBelow,
+    overlapsX as ballOverlapsX,
+    overlapsY as ballOverlapsY,
     constrainCoordinate as constrainBallCoordinate,
     createStartingPosition as createStartingBallPosition,
     createStartingAngle as createStartingBallAngle,
     createVelocity as createBallVelocity
 } from "../utility/ball";
 import createBlocks from "../utility/create-blocks";
+import { frameRate } from "../utility/game";
+import {
+    x as paddleX,
+    y as paddleY,
+    width as paddleWidth,
+    createReflectingAngle
+} from "../utility/paddle";
 import Ball from "./ball";
 import Block from "./block";
+import Paddle from "./paddle";
 
 export default () => {
     const [blocks, setBlocks] = React.useState(createBlocks());
     const [position, setPosition] = React.useState(createStartingBallPosition());
-    const [velocity, setVelocity] = React.useState(
-        createBallVelocity(createStartingBallAngle())
-    );
+    const [velocity, setVelocity] = React.useState(createBallVelocity(createStartingBallAngle()));
     const handleClick = React.useCallback(
         () => {
             setVelocity(
@@ -50,7 +58,6 @@ export default () => {
     );
     React.useEffect(
         () => {
-            const frameRate = 60;
             const intervalId = setInterval(
                 () => {
                     if (velocity.magnitude > 0) {
@@ -64,23 +71,18 @@ export default () => {
                                 let angle = velocity.angle;
 
                                 if ((!ballRightOf(ballX, 0) && angleOnLeftHalf(angle))
-                                    || (!ballLeftOf(ballX, 100)
-                                        && angleOnRightHalf(angle))) {
-                                    angle = getMirroredAngle(angle);
+                                    || (!ballLeftOf(ballX, 100) && angleOnRightHalf(angle))) {
+                                    angle = createMirroredAngle(angle);
                                 }
 
                                 if ((!ballBelow(ballY, 0) && angleOnTopHalf(angle))) {
-                                    angle = getFlippedAngle(angle);
+                                    angle = createFlippedAngle(angle);
                                 }
 
                                 if (!ballAbove(ballY, 100) && angleOnBottomHalf(angle)) {
                                     setBlocks(createBlocks());
                                     setPosition(createStartingBallPosition());
-                                    setVelocity(
-                                        createBallVelocity(
-                                            createStartingBallAngle()
-                                        )
-                                    );
+                                    setVelocity(createBallVelocity(createStartingBallAngle()));
                                 }
 
                                 ballX = constrainBallCoordinate(0, 100, ballX);
@@ -95,37 +97,19 @@ export default () => {
                                         const topY = block.topLeft.y;
                                         const bottomY = block.bottomRight.y;
 
-                                        const leftOverlaps = ballLeftOf(ballX, rightX)
-                                            && !ballLeftOf(ballX, leftX);
-                                        const leftRightOverlaps = ballLeftOf(ballX, rightX)
-                                            && ballRightOf(ballX, leftX);
-                                        const rightOverlaps = !ballRightOf(ballX, rightX)
-                                            && ballRightOf(ballX, leftX);
-                                        const overlapsX = leftOverlaps
-                                            || leftRightOverlaps
-                                            || rightOverlaps;
-                                        const topOverlaps = ballAbove(ballY, bottomY)
-                                            && !ballAbove(ballY, topY);
-                                        const topBottomOverlaps = ballAbove(ballY, bottomY)
-                                            && ballBelow(ballY, topY);
-                                        const bottomOverlaps = !ballBelow(ballY, bottomY)
-                                            && ballBelow(ballY, topY);
-                                        const overlapsY = topOverlaps
-                                            || topBottomOverlaps
-                                            || bottomOverlaps;
-
-                                        if (overlapsX && overlapsY) {
+                                        if (ballOverlapsX(ballX, leftX, rightX)
+                                            && ballOverlapsY(ballY, topY, bottomY)) {
                                             if ((ballAbove(ballY, bottomY)
                                                 && angleOnBottomHalf(angle))
                                                 || (ballBelow(ballY, topY)
                                                     && angleOnTopHalf(angle))) {
-                                                angle = getFlippedAngle(angle);
+                                                angle = createFlippedAngle(angle);
                                             }
                                             else if ((ballLeftOf(ballX, rightX)
                                                 && angleOnRightHalf(angle))
                                                 || (ballRightOf(ballX, leftX)
                                                     && angleOnLeftHalf(angle))) {
-                                                angle = getMirroredAngle(angle);
+                                                angle = createMirroredAngle(angle);
                                             }
 
                                             idsToDelete.push(block.id);
@@ -149,6 +133,12 @@ export default () => {
 
                                         return ImmutableList(mutableBlocks);
                                     })
+                                }
+
+                                if (ballOverlapsX(ballX, paddleX, paddleX + paddleWidth)
+                                    && !ballAbove(ballY, paddleY)
+                                    && angleOnBottomHalf(angle)) {
+                                    angle = createReflectingAngle(ballX);
                                 }
 
                                 if (angle !== velocity.angle) {
@@ -179,6 +169,7 @@ export default () => {
             {blocks.map((block) => (
                 <Block key={block.toString()} block={block} />
             ))}
+            <Paddle />
             <Ball position={position} />
         </React.Fragment>
     );
