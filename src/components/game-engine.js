@@ -2,10 +2,10 @@ import { List as ImmutableList } from "immutable";
 import React from "react";
 import * as Angle from "../utility/angle";
 import * as Ball from "../utility/ball";
-import * as Block from "../utility/block";
+import createBlocks from "../utility/create-blocks";
 
 export default () => {
-    const [blocks, setBlocks] = React.useState(Block.createBlocks());
+    const [blocks, setBlocks] = React.useState(createBlocks());
     const [position, setPosition] = React.useState(Ball.createStartingPosition());
     const [velocity, setVelocity] = React.useState(Ball.createVelocity(Ball.createStartingAngle()));
     const handleClick = React.useCallback(
@@ -53,7 +53,7 @@ export default () => {
                                 }
 
                                 if (!Ball.above(ballY, 100) && Angle.onBottomHalf(angle)) {
-                                    setBlocks(Block.createBlocks());
+                                    setBlocks(createBlocks());
                                     setPosition(Ball.createStartingPosition());
                                     setVelocity(Ball.createVelocity(Ball.createStartingAngle()));
                                 }
