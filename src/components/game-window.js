@@ -29,7 +29,7 @@ export default () => {
             style={{
                 position: "absolute",
                 left: (width - length) / 2,
-                top: (height - length) / 2 + verticalMargin,
+                top: ((height - length) / 2) + verticalMargin,
                 width: length,
                 height: length - (2 * verticalMargin),
                 background: "Cyan",
