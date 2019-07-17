@@ -22,48 +22,86 @@ import {
 } from "../utility/ball";
 import createBlocks from "../utility/create-blocks";
 import { frameRate } from "../utility/game";
-import { paddleX, paddleY, paddleWidth, createReflectingAngle } from "../utility/paddle";
+import {
+    paddleY,
+    paddleWidth,
+    createReflectingAngle,
+    constrainPaddleCoordinate
+} from "../utility/paddle";
 import Ball from "./ball";
 import Block from "./block";
 import Paddle from "./paddle";
 
-export default () => {
+export default ({ mouseX, leftHorizontalBound, rightHorizontalBound }) => {
     const [blocks, setBlocks] = React.useState(createBlocks());
-    const [position, setPosition] = React.useState(createStartingBallPosition());
-    const [velocity, setVelocity] = React.useState(createBallVelocity(createStartingBallAngle()));
-    const handleClick = React.useCallback(
+    const [ballPosition, setBallPosition] = React.useState(createStartingBallPosition());
+    const [ballVelocity, setBallVelocity] = React.useState(
+        createBallVelocity(createStartingBallAngle())
+    );
+    const [paddleX, setPaddleX] = React.useState(50);
+    const handlePause = React.useCallback(
         () => {
-            setVelocity(
-                velocity.magnitude === 0
-                    ? createBallVelocity(velocity.angle)
-                    : velocity.set("magnitude", 0)
+            setBallVelocity(
+                ballVelocity.magnitude === 0
+                    ? createBallVelocity(ballVelocity.angle)
+                    : ballVelocity.set("magnitude", 0)
             );
         },
-        [velocity]
+        [ballVelocity]
     );
     React.useEffect(
         () => {
-            window.addEventListener("click", handleClick);
+            window.addEventListener("click", handlePause);
 
             return () => {
-                window.removeEventListener("click", handleClick);
+                window.removeEventListener("click", handlePause);
             };
         },
-        [handleClick]
+        [handlePause]
+    );
+    const handleKeyDown = React.useCallback(
+        (keyboardEvent) => {
+            if (keyboardEvent.key === "ArrowLeft") {
+                if (ballVelocity.magnitude > 0) {
+                    setPaddleX(constrainPaddleCoordinate(0, 100, paddleX - 4));
+                }
+            } else if (keyboardEvent.key === "ArrowRight") {
+                if (ballVelocity.magnitude > 0) {
+                    setPaddleX(constrainPaddleCoordinate(0, 100, paddleX + 4));
+                }
+            } else if (keyboardEvent.key === " ") {
+                if (!keyboardEvent.repeat) {
+                    handlePause();
+                }
+            }
+        },
+        [ballVelocity.magnitude, handlePause, paddleX]
+    )
+    React.useEffect(
+        () => {
+            window.addEventListener("keydown", handleKeyDown);
+
+            return () => {
+                window.removeEventListener("keydown", handleKeyDown);
+            };
+        },
+        [handleKeyDown]
     );
     React.useEffect(
         () => {
-            const intervalId = setInterval(
+            const intervalId = window.setInterval(
                 () => {
-                    if (velocity.magnitude > 0) {
-                        setPosition(
-                            (oldPosition) => {
-                                let ballX = oldPosition.x
-                                    + (velocity.magnitude / frameRate) * Math.cos(velocity.angle);
-                                let ballY = oldPosition.y
-                                    - (velocity.magnitude / frameRate) * Math.sin(velocity.angle);
+                    if (ballVelocity.magnitude > 0) {
+                        setBallPosition(
+                            (oldBallPosition) => {
+                                let ballX = oldBallPosition.x
+                                    + (ballVelocity.magnitude / frameRate)
+                                    * Math.cos(ballVelocity.angle);
+                                let ballY = oldBallPosition.y
+                                    - (ballVelocity.magnitude / frameRate)
+                                    * Math.sin(ballVelocity.angle);
 
-                                let angle = velocity.angle;
+                                let angle = ballVelocity.angle;
 
                                 if ((!ballRightOf(ballX, 0) && angleOnLeftHalf(angle))
                                     || (!ballLeftOf(ballX, 100) && angleOnRightHalf(angle))) {
@@ -76,8 +114,8 @@ export default () => {
 
                                 if (!ballAbove(ballY, 100) && angleOnBottomHalf(angle)) {
                                     setBlocks(createBlocks());
-                                    setPosition(createStartingBallPosition());
-                                    setVelocity(createBallVelocity(createStartingBallAngle()));
+                                    setBallPosition(createStartingBallPosition());
+                                    setBallVelocity(createBallVelocity(createStartingBallAngle()));
                                 }
 
                                 ballX = constrainBallCoordinate(0, 100, ballX);
@@ -133,14 +171,15 @@ export default () => {
                                 if (ballOverlapsX(ballX, paddleX, paddleX + paddleWidth)
                                     && !ballAbove(ballY, paddleY)
                                     && angleOnBottomHalf(angle)) {
-                                    angle = createReflectingAngle(ballX);
+                                    angle = createReflectingAngle(paddleX, ballX);
+                                    console.log(angle * 180 / Math.PI);
                                 }
 
-                                if (angle !== velocity.angle) {
-                                    setVelocity(createBallVelocity(angle));
+                                if (angle !== ballVelocity.angle) {
+                                    setBallVelocity(createBallVelocity(angle));
                                 }
 
-                                return oldPosition.withMutations(
+                                return oldBallPosition.withMutations(
                                     (mutablePosition) => mutablePosition
                                         .set("x", ballX)
                                         .set("y", ballY)
@@ -156,7 +195,7 @@ export default () => {
                 clearInterval(intervalId);
             }
         },
-        [blocks, blocks.length, velocity, velocity.angle, velocity.magnitude]
+        [blocks, blocks.length, ballVelocity, ballVelocity.angle, ballVelocity.magnitude, paddleX, mouseX, leftHorizontalBound, rightHorizontalBound]
     );
 
     return (
@@ -164,8 +203,8 @@ export default () => {
             {blocks.map((block) => (
                 <Block key={block.toString()} block={block} />
             ))}
-            <Paddle />
-            <Ball position={position} />
+            <Paddle x={paddleX} />
+            <Ball position={ballPosition} />
         </React.Fragment>
     );
 }

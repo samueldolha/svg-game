@@ -1,10 +1,10 @@
 import React from "react";
 import { ballRadius } from "../utility/ball";
-import { paddleX, paddleY, paddleWidth } from "../utility/paddle";
+import { paddleY, paddleWidth } from "../utility/paddle";
 
-export default () => (
+export default ({ x }) => (
     <rect
-        x={`${paddleX}%`}
+        x={`${x}%`}
         y={`${paddleY}%`}
         width={`${paddleWidth}%`}
         height={`${ballRadius}%`}
