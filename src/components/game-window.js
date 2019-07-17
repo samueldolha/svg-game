@@ -22,15 +22,16 @@ export default () => {
         [handleResize]
     );
     const length = Math.min(width, height);
+    const verticalMargin = 3;
 
     return (
         <div
             style={{
                 position: "absolute",
                 left: (width - length) / 2,
-                top: (height - length) / 2 + 3,
+                top: (height - length) / 2 + verticalMargin,
                 width: length,
-                height: length - 6,
+                height: length - (2 * verticalMargin),
                 background: "Cyan",
             }}
         >
