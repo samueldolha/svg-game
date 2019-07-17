@@ -1,11 +1,11 @@
 import React from "react";
-import * as Ball from "../utility/ball";
+import { radius as ballRadius } from "../utility/ball";
 
 export default ({ position }) => (
     <circle
         cx={`${position.x}%`}
         cy={`${position.y}%`}
-        r={`${Ball.radius}%`}
+        r={`${ballRadius}%`}
         style={{ fill: "White", stroke: "Black" }}
     />
 );

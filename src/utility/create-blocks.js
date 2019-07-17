@@ -1,8 +1,8 @@
 import { List as ImmutableList, Record as ImmutableRecord } from "immutable";
-import * as Ball from "./ball";
+import { radius as ballRadius } from "./ball";
 import ImmutablePosition from "./immutable-position";
 
-const blockWidth = (16 / 3) * Ball.radius;
+const blockWidth = (16 / 3) * ballRadius;
 const blockHeight = blockWidth / 2;
 const blockColours = ['#E70000', '#FF8C00', '#FFEF00', '#00811F', '#0044FF', '#760089'];
 

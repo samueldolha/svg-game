@@ -1,22 +1,38 @@
 import { List as ImmutableList } from "immutable";
 import React from "react";
-import * as AngleUtility from "../utility/angle";
-import * as BallUtility from "../utility/ball";
+import {
+    onLeftHalf as angleOnLeftHalf,
+    onRightHalf as angleOnRightHalf,
+    onTopHalf as angleOnTopHalf,
+    onBottomHalf as angleOnBottomHalf,
+    getMirrored as getMirroredAngle,
+    getFlipped as getFlippedAngle
+} from "../utility/angle";
+import {
+    leftOf as ballLeftOf,
+    rightOf as ballRightOf,
+    above as ballAbove,
+    below as ballBelow,
+    constrainCoordinate as constrainBallCoordinate,
+    createStartingPosition as createStartingBallPosition,
+    createStartingAngle as createStartingBallAngle,
+    createVelocity as createBallVelocity
+} from "../utility/ball";
 import createBlocks from "../utility/create-blocks";
 import Ball from "./ball";
 import Block from "./block";
 
 export default () => {
     const [blocks, setBlocks] = React.useState(createBlocks());
-    const [position, setPosition] = React.useState(BallUtility.createStartingPosition());
+    const [position, setPosition] = React.useState(createStartingBallPosition());
     const [velocity, setVelocity] = React.useState(
-        BallUtility.createVelocity(BallUtility.createStartingAngle())
+        createBallVelocity(createStartingBallAngle())
     );
     const handleClick = React.useCallback(
         () => {
             setVelocity(
                 velocity.magnitude === 0
-                    ? BallUtility.createVelocity(velocity.angle)
+                    ? createBallVelocity(velocity.angle)
                     : velocity.set("magnitude", 0)
             );
         },
@@ -47,31 +63,28 @@ export default () => {
 
                                 let angle = velocity.angle;
 
-                                if ((!BallUtility.rightOf(ballX, 0)
-                                    && AngleUtility.onLeftHalf(angle))
-                                    || (!BallUtility.leftOf(ballX, 100)
-                                        && AngleUtility.onRightHalf(angle))) {
-                                    angle = AngleUtility.getMirrored(angle);
+                                if ((!ballRightOf(ballX, 0) && angleOnLeftHalf(angle))
+                                    || (!ballLeftOf(ballX, 100)
+                                        && angleOnRightHalf(angle))) {
+                                    angle = getMirroredAngle(angle);
                                 }
 
-                                if ((!BallUtility.below(ballY, 0)
-                                    && AngleUtility.onTopHalf(angle))) {
-                                    angle = AngleUtility.getFlipped(angle);
+                                if ((!ballBelow(ballY, 0) && angleOnTopHalf(angle))) {
+                                    angle = getFlippedAngle(angle);
                                 }
 
-                                if (!BallUtility.above(ballY, 100)
-                                    && AngleUtility.onBottomHalf(angle)) {
+                                if (!ballAbove(ballY, 100) && angleOnBottomHalf(angle)) {
                                     setBlocks(createBlocks());
-                                    setPosition(BallUtility.createStartingPosition());
+                                    setPosition(createStartingBallPosition());
                                     setVelocity(
-                                        BallUtility.createVelocity(
-                                            BallUtility.createStartingAngle()
+                                        createBallVelocity(
+                                            createStartingBallAngle()
                                         )
                                     );
                                 }
 
-                                ballX = BallUtility.constrainCoordinate(0, 100, ballX);
-                                ballY = BallUtility.constrainCoordinate(0, 100, ballY);
+                                ballX = constrainBallCoordinate(0, 100, ballX);
+                                ballY = constrainBallCoordinate(0, 100, ballY);
 
                                 const idsToDelete = [];
 
@@ -82,37 +95,37 @@ export default () => {
                                         const topY = block.topLeft.y;
                                         const bottomY = block.bottomRight.y;
 
-                                        const leftOverlaps = BallUtility.leftOf(ballX, rightX)
-                                            && !BallUtility.leftOf(ballX, leftX);
-                                        const leftRightOverlaps = BallUtility.leftOf(ballX, rightX)
-                                            && BallUtility.rightOf(ballX, leftX);
-                                        const rightOverlaps = !BallUtility.rightOf(ballX, rightX)
-                                            && BallUtility.rightOf(ballX, leftX);
+                                        const leftOverlaps = ballLeftOf(ballX, rightX)
+                                            && !ballLeftOf(ballX, leftX);
+                                        const leftRightOverlaps = ballLeftOf(ballX, rightX)
+                                            && ballRightOf(ballX, leftX);
+                                        const rightOverlaps = !ballRightOf(ballX, rightX)
+                                            && ballRightOf(ballX, leftX);
                                         const overlapsX = leftOverlaps
                                             || leftRightOverlaps
                                             || rightOverlaps;
-                                        const topOverlaps = BallUtility.above(ballY, bottomY)
-                                            && !BallUtility.above(ballY, topY);
-                                        const topBottomOverlaps = BallUtility.above(ballY, bottomY)
-                                            && BallUtility.below(ballY, topY);
-                                        const bottomOverlaps = !BallUtility.below(ballY, bottomY)
-                                            && BallUtility.below(ballY, topY);
+                                        const topOverlaps = ballAbove(ballY, bottomY)
+                                            && !ballAbove(ballY, topY);
+                                        const topBottomOverlaps = ballAbove(ballY, bottomY)
+                                            && ballBelow(ballY, topY);
+                                        const bottomOverlaps = !ballBelow(ballY, bottomY)
+                                            && ballBelow(ballY, topY);
                                         const overlapsY = topOverlaps
                                             || topBottomOverlaps
                                             || bottomOverlaps;
 
                                         if (overlapsX && overlapsY) {
-                                            if ((BallUtility.above(ballY, bottomY)
-                                                && AngleUtility.onBottomHalf(angle))
-                                                || (BallUtility.below(ballY, topY)
-                                                    && AngleUtility.onTopHalf(angle))) {
-                                                angle = AngleUtility.getFlipped(angle);
+                                            if ((ballAbove(ballY, bottomY)
+                                                && angleOnBottomHalf(angle))
+                                                || (ballBelow(ballY, topY)
+                                                    && angleOnTopHalf(angle))) {
+                                                angle = getFlippedAngle(angle);
                                             }
-                                            else if ((BallUtility.leftOf(ballX, rightX)
-                                                && AngleUtility.onRightHalf(angle))
-                                                || (BallUtility.rightOf(ballX, leftX)
-                                                    && AngleUtility.onLeftHalf(angle))) {
-                                                angle = AngleUtility.getMirrored(angle);
+                                            else if ((ballLeftOf(ballX, rightX)
+                                                && angleOnRightHalf(angle))
+                                                || (ballRightOf(ballX, leftX)
+                                                    && angleOnLeftHalf(angle))) {
+                                                angle = getMirroredAngle(angle);
                                             }
 
                                             idsToDelete.push(block.id);
@@ -139,7 +152,7 @@ export default () => {
                                 }
 
                                 if (angle !== velocity.angle) {
-                                    setVelocity(BallUtility.createVelocity(angle));
+                                    setVelocity(createBallVelocity(angle));
                                 }
 
                                 return oldPosition.withMutations(
