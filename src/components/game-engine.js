@@ -3,11 +3,10 @@ import React from "react";
 import * as Angle from "../utility/angle";
 import * as Ball from "../utility/ball";
 import * as Block from "../utility/block";
-import ImmutablePosition from "../utility/immutable-position";
 
 export default () => {
     const [blocks, setBlocks] = React.useState(Block.createBlocks());
-    const [position, setPosition] = React.useState(ImmutablePosition({ x: 50, y: 70 }));
+    const [position, setPosition] = React.useState(Ball.createStartingPosition());
     const [velocity, setVelocity] = React.useState(Ball.createVelocity(Ball.createStartingAngle()));
     const handleClick = React.useCallback(
         () => {
@@ -49,9 +48,14 @@ export default () => {
                                     angle = Angle.getMirrored(angle);
                                 }
 
-                                if ((!Ball.below(ballY, 0) && Angle.onTopHalf(angle))
-                                    || (!Ball.above(ballY, 100) && Angle.onBottomHalf(angle))) {
+                                if ((!Ball.below(ballY, 0) && Angle.onTopHalf(angle))) {
                                     angle = Angle.getFlipped(angle);
+                                }
+
+                                if (!Ball.above(ballY, 100) && Angle.onBottomHalf(angle)) {
+                                    setBlocks(Block.createBlocks());
+                                    setPosition(Ball.createStartingPosition());
+                                    setVelocity(Ball.createVelocity(Ball.createStartingAngle()));
                                 }
 
                                 ballX = Ball.constrainCoordinate(0, 100, ballX);

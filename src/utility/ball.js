@@ -1,3 +1,4 @@
+import ImmutablePosition from "../utility/immutable-position";
 import ImmutableVelocity from "./immutable-velocity";
 
 export const radius = 0.75;
@@ -14,6 +15,8 @@ export const constrainCoordinate = (minimum, maximum, coordinate) => Math.max(
     minimum + radius,
     Math.min(maximum - radius, coordinate)
 );
+
+export const createStartingPosition = () => ImmutablePosition({ x: 50, y: 70 });
 
 export const createStartingAngle = () => ((2 / 3) * Math.PI * Math.random()) + ((1 / 12) * Math.PI);
 
