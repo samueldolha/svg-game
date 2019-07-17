@@ -1,11 +1,11 @@
-export const onLeftHalf = (angle) => angle > (1 / 2) * Math.PI && angle < (3 / 2) * Math.PI;
+export const angleOnLeftHalf = (angle) => angle > (1 / 2) * Math.PI && angle < (3 / 2) * Math.PI;
 
-export const onRightHalf = (angle) => angle < (1 / 2) * Math.PI || angle > (3 / 2) * Math.PI;
+export const angleOnRightHalf = (angle) => angle < (1 / 2) * Math.PI || angle > (3 / 2) * Math.PI;
 
-export const onTopHalf = (angle) => angle < Math.PI;
+export const angleOnTopHalf = (angle) => angle < Math.PI;
 
-export const onBottomHalf = (angle) => angle > Math.PI;
+export const angleOnBottomHalf = (angle) => angle > Math.PI;
 
-export const createMirrored = (angle) => (angle <= Math.PI ? Math.PI : 3 * Math.PI) - angle;
+export const createMirroredAngle = (angle) => (angle <= Math.PI ? Math.PI : 3 * Math.PI) - angle;
 
-export const createFlipped = (angle) => (2 * Math.PI) - angle;
+export const createFlippedAngle = (angle) => (2 * Math.PI) - angle;

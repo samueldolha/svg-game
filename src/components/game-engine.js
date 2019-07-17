@@ -1,33 +1,28 @@
 import { List as ImmutableList } from "immutable";
 import React from "react";
 import {
-    onLeftHalf as angleOnLeftHalf,
-    onRightHalf as angleOnRightHalf,
-    onTopHalf as angleOnTopHalf,
-    onBottomHalf as angleOnBottomHalf,
-    createMirrored as createMirroredAngle,
-    createFlipped as createFlippedAngle
+    angleOnLeftHalf,
+    angleOnRightHalf,
+    angleOnTopHalf,
+    angleOnBottomHalf,
+    createMirroredAngle,
+    createFlippedAngle
 } from "../utility/angle";
 import {
-    leftOf as ballLeftOf,
-    rightOf as ballRightOf,
-    above as ballAbove,
-    below as ballBelow,
-    overlapsX as ballOverlapsX,
-    overlapsY as ballOverlapsY,
-    constrainCoordinate as constrainBallCoordinate,
-    createStartingPosition as createStartingBallPosition,
-    createStartingAngle as createStartingBallAngle,
-    createVelocity as createBallVelocity
+    ballLeftOf,
+    ballRightOf,
+    ballAbove,
+    ballBelow,
+    ballOverlapsX,
+    ballOverlapsY,
+    constrainBallCoordinate,
+    createStartingBallPosition,
+    createStartingBallAngle,
+    createBallVelocity
 } from "../utility/ball";
 import createBlocks from "../utility/create-blocks";
 import { frameRate } from "../utility/game";
-import {
-    x as paddleX,
-    y as paddleY,
-    width as paddleWidth,
-    createReflectingAngle
-} from "../utility/paddle";
+import { paddleX, paddleY, paddleWidth, createReflectingAngle } from "../utility/paddle";
 import Ball from "./ball";
 import Block from "./block";
 import Paddle from "./paddle";

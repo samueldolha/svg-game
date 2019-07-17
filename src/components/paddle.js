@@ -1,12 +1,12 @@
 import React from "react";
-import { radius as ballRadius } from "../utility/ball";
-import { x, y, width } from "../utility/paddle";
+import { ballRadius } from "../utility/ball";
+import { paddleX, paddleY, paddleWidth } from "../utility/paddle";
 
 export default () => (
     <rect
-        x={`${x}%`}
-        y={`${y}%`}
-        width={`${width}%`}
+        x={`${paddleX}%`}
+        y={`${paddleY}%`}
+        width={`${paddleWidth}%`}
         height={`${ballRadius}%`}
         rx="0.3%"
         style={{ fill: "#FF66CC", stroke: "#990066" }}

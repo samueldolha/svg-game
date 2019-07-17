@@ -1,14 +1,14 @@
-import {
-    radius as ballRadius,
-    constrainCoordinate as constrainBallCoordinate
-} from "./ball";
+import { ballRadius, constrainBallCoordinate } from "./ball";
 
-export const x = 50;
+export const paddleX = 50;
 
-export const y = 98;
+export const paddleY = 98;
 
-export const width = 20 * ballRadius;
+export const paddleWidth = 20 * ballRadius;
 
 export const createReflectingAngle = (ballX) => ((11 / 12) * Math.PI)
-    - ((((constrainBallCoordinate(x, x + width, ballX) - x) * (5 / 6) * Math.PI) / width)
+    - ((((constrainBallCoordinate(paddleX, paddleX + paddleWidth, ballX) - paddleX)
+        * (5 / 6)
+        * Math.PI)
+        / paddleWidth)
         + ((1 / 12) * Math.PI));

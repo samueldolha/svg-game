@@ -1,5 +1,5 @@
 import { List as ImmutableList, Record as ImmutableRecord } from "immutable";
-import { radius as ballRadius } from "./ball";
+import { ballRadius } from "./ball";
 import ImmutablePosition from "./immutable-position";
 
 const blockWidth = (16 / 3) * ballRadius;

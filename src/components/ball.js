@@ -1,5 +1,5 @@
 import React from "react";
-import { radius as ballRadius } from "../utility/ball";
+import { ballRadius } from "../utility/ball";
 
 export default ({ position }) => (
     <circle
