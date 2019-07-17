@@ -3,6 +3,7 @@ import React from "react";
 import * as Angle from "../utility/angle";
 import * as Ball from "../utility/ball";
 import createBlocks from "../utility/create-blocks";
+import Block from "./block";
 
 export default () => {
     const [blocks, setBlocks] = React.useState(createBlocks());
@@ -152,15 +153,7 @@ export default () => {
     return (
         <React.Fragment>
             {blocks.map((block) => (
-                <rect
-                    key={`${block.topLeft.x},${block.topLeft.y}`}
-                    x={`${block.topLeft.x}%`}
-                    y={`${block.topLeft.y}%`}
-                    width={`${block.bottomRight.x - block.topLeft.x}%`}
-                    height={`${block.bottomRight.y - block.topLeft.y}%`}
-                    rx="0.3%"
-                    style={{ fill: block.colour, stroke: "Black" }}
-                />
+                <Block key={block.toString()} block={block} />
             ))}
             <circle
                 cx={`${position.x}%`}
