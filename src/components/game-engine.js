@@ -66,18 +66,24 @@ export default () => {
                                         const topY = block.topLeft.y;
                                         const bottomY = block.bottomRight.y;
 
-                                        const overlapsX = (Ball.leftOf(ballX, rightX)
-                                            && !Ball.leftOf(ballX, leftX))
-                                            || (Ball.leftOf(ballX, rightX)
-                                                && Ball.rightOf(ballX, leftX))
-                                            || (!Ball.rightOf(ballX, rightX)
-                                                && Ball.rightOf(ballX, leftX));
-                                        const overlapsY = (Ball.above(ballY, bottomY)
-                                            && !Ball.above(ballY, topY))
-                                            || (Ball.above(ballY, bottomY)
-                                                && Ball.below(ballY, topY))
-                                            || (!Ball.below(ballY, bottomY)
-                                                && Ball.below(ballY, topY));
+                                        const leftOverlaps = Ball.leftOf(ballX, rightX)
+                                            && !Ball.leftOf(ballX, leftX);
+                                        const leftRightOverlaps = Ball.leftOf(ballX, rightX)
+                                            && Ball.rightOf(ballX, leftX);
+                                        const rightOverlaps = !Ball.rightOf(ballX, rightX)
+                                            && Ball.rightOf(ballX, leftX);
+                                        const overlapsX = leftOverlaps
+                                            || leftRightOverlaps
+                                            || rightOverlaps;
+                                        const topOverlaps = Ball.above(ballY, bottomY)
+                                            && !Ball.above(ballY, topY);
+                                        const topBottomOverlaps = Ball.above(ballY, bottomY)
+                                            && Ball.below(ballY, topY);
+                                        const bottomOverlaps = !Ball.below(ballY, bottomY)
+                                            && Ball.below(ballY, topY);
+                                        const overlapsY = topOverlaps
+                                            || topBottomOverlaps
+                                            || bottomOverlaps;
 
                                         if (overlapsX && overlapsY) {
                                             if ((Ball.above(ballY, bottomY)
